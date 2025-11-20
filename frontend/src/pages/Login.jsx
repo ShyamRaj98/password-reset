@@ -12,46 +12,96 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await API.post("/api/auth/login", { email, password });
+
       setMsg({ type: "success", text: res.data.message });
-      // store basic demo info (in real app store JWT)
+
+      // save user (demo)
       localStorage.setItem("user", JSON.stringify(res.data.user));
+
       setTimeout(() => nav("/"), 700);
     } catch (err) {
-      setMsg({ type: "danger", text: err.response?.data?.message || "Error" });
+      setMsg({
+        type: "danger",
+        text: err.response?.data?.message || "Invalid credentials",
+      });
     }
   };
 
   return (
     <div className="row justify-content-center">
-      <div className="col-md-6">
-        <h3>Login</h3>
-        {msg && <div className={`alert alert-${msg.type}`}>{msg.text}</div>}
-        <form onSubmit={submit}>
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <button className="btn btn-primary">Login</button>
-            <Link to="/forgot-password">Forgot password?</Link>
-          </div>
-        </form>
+      <div className="col-md-7 col-lg-5">
+
+        {/* GLASS CARD */}
+        <div
+          className="card p-4 mt-5 border-0 shadow-lg rounded-4"
+          style={{
+            backdropFilter: "blur(10px)",
+            background: "rgba(255,255,255,0.85)",
+          }}
+        >
+          <h2 className="text-center fw-bold mb-3">Welcome Back 👋</h2>
+          <p className="text-center text-muted mb-4">
+            Login to access dashboard, profile & settings
+          </p>
+
+          {msg && (
+            <div className={`alert alert-${msg.type} text-center`}>
+              {msg.text}
+            </div>
+          )}
+
+          <form onSubmit={submit}>
+            {/* Email */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Email Address</label>
+              <input
+                type="email"
+                className="form-control form-control-lg rounded-3"
+                placeholder="yourname@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            {/* Password */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Password</label>
+              <input
+                type="password"
+                className="form-control form-control-lg rounded-3"
+                placeholder="Enter password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            {/* Login Button */}
+            <button className="btn btn-primary btn-lg w-100 rounded-3 mt-2">
+              Login
+            </button>
+
+            {/* Forgot Password */}
+            <div className="text-end mt-2">
+              <Link to="/forgot-password" className="small fw-semibold">
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Divider */}
+            <div className="text-center my-3 text-muted">OR</div>
+
+            {/* Register Redirect */}
+            <p className="text-center">
+              Don’t have an account?{" "}
+              <Link to="/register" className="fw-semibold">
+                Create account
+              </Link>
+            </p>
+          </form>
+        </div>
+
       </div>
     </div>
   );
