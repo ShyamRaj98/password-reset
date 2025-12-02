@@ -4,24 +4,21 @@ const createTransport = (host, port, user, pass) => {
   return nodemailer.createTransport({
     host,
     port,
-    auth: { user, pass },
-    secure: false
+    secure: false,
+    auth: { user, pass }
   });
 };
 
-/**
- * sendEmail(to, subject, html)
- */
 export default async function sendEmail({ to, subject, html, env }) {
   const transporter = createTransport(
     env.SMTP_HOST,
-    Number(env.SMTP_PORT || 587),
+    Number(env.SMTP_PORT),
     env.SMTP_USER,
     env.SMTP_PASS
   );
 
   const info = await transporter.sendMail({
-    from: `"NoReply" <no-reply@example.com>`,
+    from: `"Support" <${env.SMTP_USER}>`,
     to,
     subject,
     html
