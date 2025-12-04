@@ -1,31 +1,31 @@
-import axios from "axios";
+import Brevo from "@getbrevo/brevo";
 
-export default async function sendEmail({ to, subject, html }) {
+export const sendMail = async (to, subject, text) => {
   try {
-    const response = await axios.post(
-      "https://api.brevo.com/v3/smtp/email",
-      {
-        sender: {
-          name: "Support Team",
-          email: process.env.SMTP_USER   // must be Brevo-verified email
-        },
-        to: [{ email: to }],
-        subject: subject,
-        htmlContent: html,
-      },
-      {
-        headers: {
-          "api-key": process.env.SMTP_PASS,   // MUST be Brevo v3 API key
-          "Content-Type": "application/json",
-        },
-      }
+    const apiInstance = new Brevo.TransactionalEmailsApi();
+
+    // SET API KEY
+    apiInstance.setApiKey(
+      Brevo.TransactionalEmailsApiApiKeys.apiKey,
+      process.env.BREVO_API_KEY
     );
 
-    console.log("Brevo response:", response.data);
-    return true;
+    const email = new Brevo.SendSmtpEmail();
 
+    email.sender = {
+      name: "Password Reset",
+      email: process.env.SMTP_USER, // Verified sender email
+    };
+
+    email.to = [{ email: to }];
+    email.subject = subject;
+    email.htmlContent = `<p>${text}</p>`; // use htmlContent instead of textContent
+
+    await apiInstance.sendTransacEmail(email);
+
+    console.log("📧 Email sent successfully!");
   } catch (error) {
-    console.error("Email send error:", error.response?.data || error.message);
-    throw new Error("Email sending failed");
+    console.error("❌ Error sending email:", error.response?.body || error);
+    throw new Error("Email could not be sent");
   }
-}
+};
