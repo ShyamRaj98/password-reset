@@ -68,7 +68,7 @@ router.post("/forgot-password", async (req, res) => {
       <a href="${resetUrl}">${resetUrl}</a>
     `;
 
-    await sendEmail({ to: user.email, subject: "Password Reset", html, env: process.env });
+    await sendEmail({ to: user.email, subject: "Password Reset", html });
     res.json({ message: "Reset link sent to email" });
   } catch (err) {
     console.error(err);
